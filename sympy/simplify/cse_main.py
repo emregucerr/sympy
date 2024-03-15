@@ -379,8 +379,8 @@ def tree_cse(exprs, symbols, opt_subs=None, order='canonical'):
                 sym = MatrixSymbol(sym.name, orig_expr.rows,
                     orig_expr.cols)
 
-            subs[orig_expr] = sym
-            replacements.append((sym, new_expr))
+            reduced_expr = new_expr.doit()
+            replacements.append((sym, reduced_expr))
             return sym
 
         else:
@@ -514,7 +514,9 @@ def cse(exprs, symbols=None, optimizations=None, postprocess=None,
     exprs = copy
     for i, (sym, subtree) in enumerate(replacements):
         subtree = postprocess_for_cse(subtree, optimizations)
+        subtree = subtree.simplify()
         replacements[i] = (sym, subtree)
+    replacements = [(sym, expr.doit()) for sym, expr in replacements]
     reduced_exprs = [postprocess_for_cse(e, optimizations)
                      for e in reduced_exprs]
 
