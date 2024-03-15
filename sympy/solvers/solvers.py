@@ -2636,6 +2636,10 @@ def _tsolve(eq, sym, **flags):
 
 @conserve_mpmath_dps
 def nsolve(*args, **kwargs):
+    """
+    Solve a nonlinear equation system numerically.
+    [Previous nsolve docstring content...]
+    """
     r"""
     Solve a nonlinear equation system numerically::
 
@@ -3330,3 +3334,12 @@ def unrad(eq, *syms, **flags):
 
 from sympy.solvers.bivariate import (
     bivariate_type, _solve_lambert, _filtered_gens)
+def smart_nsolve(expr, var, guess, **kwargs):
+    # Compute the denominator
+    # (Your code for computing the denominator should be here)
+    # Check if denominator is a number and calculate its value at the guess
+    if not denominator.is_number:
+        denominator_value = denominator.subs(var, guess)
+    else:
+        denominator_value = None
+    pass
