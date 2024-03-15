@@ -1250,6 +1250,6 @@ def fps(f, x=None, x0=0, dir=1, hyper=True, order=4, rational=True, full=False):
     result = compute_fps(f, x, x0, dir, hyper, order, rational, full)
 
     if result is None:
-        return f
+        raise NotImplementedError("Formal power series for this function is not implemented yet")
 
     return FormalPowerSeries(f, x, x0, dir, result)
