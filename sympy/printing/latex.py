@@ -101,6 +101,30 @@ greek_letters_set = frozenset(greeks)
 class LatexPrinter(Printer):
     printmethod = "_latex"
 
+    def _print_SingularityFunction(self, expr, exp=None):
+        """
+        Latex printing method for SingularityFunction.
+        
+        Parameters
+        ----------
+        expr : SingularityFunction
+            The singularity function to print.
+        exp : optional parameter for the exponent. 
+            It's used when the SingularityFunction is raised to a power.
+            
+        Example
+        -------
+        SingularityFunction(x, a, n) will be printed as "\\langle x - a \\rangle^{n}",
+        and if it's raised to a power m, it will print as "\\left(\\langle x - a \\rangle^{n}\\right)^{m}".
+        """
+        arg = self._print(expr.args[0] - expr.args[1])
+        power = self._print(expr.args[2])
+        tex = r"\\langle %s \\rangle^{%s}" % (arg, power)
+        if exp is not None:
+            # if there's an outer exponent, we must surround the main expression with parentheses
+            tex = self._do_exponent(r"\\left(%s\\right)" % tex, exp)
+        return tex
+
     _default_settings = {
         "order": None,
         "mode": "plain",
@@ -325,6 +349,24 @@ class LatexPrinter(Printer):
             return r"- \infty"
         else:
             return str_real
+
+    def _do_exponent(self, base, exp):
+        """
+        Helper method to format exponents in LaTeX.
+        
+        Parameters
+        ----------
+        base : string
+            The LaTeX string of the base expression which is to be raised to an exponent.
+        exp : string
+            The LaTeX string of the exponent.
+            
+        Returns
+        -------
+        result : string
+            The LaTeX string with the base expression raised to the exponent.
+        """
+        return "{%s}^{%s}" % (base, exp)
 
     def _print_Mul(self, expr):
         include_parens = False
