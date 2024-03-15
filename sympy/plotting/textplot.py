@@ -3,6 +3,7 @@ from __future__ import print_function, division
 from sympy.core.symbol import Dummy
 from sympy.core.compatibility import range
 from sympy.utilities.lambdify import lambdify
+from sympy.functions.special.singularity_functions import SingularityFunction
 
 
 def textplot(expr, a, b, W=55, H=18):
@@ -22,6 +23,20 @@ def textplot(expr, a, b, W=55, H=18):
         raise ValueError("length can not be greater than 1")
     x = free.pop() if free else Dummy()
     f = lambdify([x], expr)
+    if isinstance(expr, SingularityFunction):  # Check if expr is SingularityFunction
+        x_sing = expr.args[0]  # the variable in the SingularityFunction
+        a_sing = float(expr.args[1])  # the offset
+        n_sing = int(expr.args[2])  # the exponent
+
+        def singularity_func(var):
+            if var < a_sing:  # Before the singularity
+                return 0
+            elif var == a_sing:  # At the point of singularity
+                return 'Undefined' if n_sing == -1 else 'Infinity'  # Placeholder text for singularity
+            else:  # After the singularity
+                return (var - a_sing)**n_sing
+
+        f = singularity_func  # Use the custom function for plotting
     a = float(a)
     b = float(b)
 
