@@ -1,4 +1,4 @@
-from sympy.core import (pi, oo, symbols, Rational, Integer,
+from sympy.core import (pi, oo, symbols, Rational, Integer, sinc,
                         GoldenRatio, EulerGamma, Catalan, Lambda, Dummy, Eq)
 from sympy.functions import (Piecewise, sin, cos, Abs, exp, ceiling, sqrt,
                              gamma, sign)
@@ -490,3 +490,15 @@ def test_ccode_For():
     assert sol == ("for (x = 0; x < 10; x += 2) {\n"
                    "   y *= x;\n"
                    "}")
+
+def test_ccode_sinc():
+    x = symbols('x')
+
+    # Test sinc with non-zero argument
+    assert ccode(sinc(x)) == '((Ne(x, 0)) ? (sin(x)/x) : (1))'
+
+    # Test sinc with zero argument
+    assert ccode(sinc(0)) == '1'
+
+    # Test sinc with symbolic argument
+    assert ccode(sinc(x)) == '((Ne(x, 0)) ? (sin(x)/x) : (1))'

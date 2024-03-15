@@ -13,6 +13,7 @@ source code files that are compilable without further modifications.
 
 from __future__ import print_function, division
 
+from sympy import Piecewise, Ne, sin
 from sympy.core import S
 from sympy.core.compatibility import string_types, range
 from sympy.codegen.ast import Assignment
@@ -43,6 +44,7 @@ known_functions = {
     "atanh": "atanh",
     "floor": "floor",
     "ceiling": "ceil",
+    "sinc": "sinc",
 }
 
 # These are the core reserved words in the C language. Taken from:
