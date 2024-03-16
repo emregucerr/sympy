@@ -1056,3 +1056,10 @@ def test_issue_11174():
 
     soln = Intersection(S.Reals, FiniteSet(x), evaluate=False)
     assert Intersection(FiniteSet(x), S.Reals) == soln
+from sympy import S, oo, Union
+from sympy.sets.sets import Complexes
+import pytest
+
+@pytest.mark.xfail
+def test_union_with_oo_and_complexes():
+    assert Union(Complexes, FiniteSet(oo)) == Complexes

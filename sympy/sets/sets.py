@@ -929,6 +929,11 @@ class Interval(Set, EvalfMixin):
 
         See Set._union for docstring
         """
+        # Check if any of the sets is S.Complexes and the other contains `oo`
+        if any(set == S.Complexes and contains_oo(other) for set in self.args for other in self.args if set != other):
+            # Return the current union if S.Complexes is one of the sets and the other contains `oo`
+            # Instead of simplifying further to just S.Complexes, we keep the union as is
+            return self
         if other.is_UniversalSet:
             return S.UniversalSet
         if other.is_Interval and self._is_comparable(other):
@@ -1242,6 +1247,17 @@ class Union(Set, EvalfMixin):
             return args.pop()
         else:
             return Union(args, evaluate=False)
+
+from sympy.core.singleton import S
+from sympy.sets.sets import FiniteSet
+from sympy.core.numbers import Infinity
+
+# Function to check if `oo` is an element in the provided set
+# Returns True if set contains `oo`, else False
+def contains_oo(set):
+    if isinstance(set, FiniteSet):
+        return any(elem is S.Infinity or elem is S.NegativeInfinity for elem in set)
+    return False
 
     def _complement(self, universe):
         # DeMorgan's Law
